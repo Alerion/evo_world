@@ -1,34 +1,60 @@
-/* globals __DEV__ */
 import Phaser from 'phaser'
-import Mushroom from '../sprites/Mushroom'
+import HexTile from '../sprites/HexTile'
+
+// FIXME: Refactor this copy-pasted shit code
+let hexTileHeight = 61 // this is for horizontal
+let hexTileWidth = Math.sqrt(3) / 2 * hexTileHeight // for horizontal
+let hexGrid
 
 export default class extends Phaser.State {
   init () {}
-  preload () {}
 
   create () {
-    const bannerText = 'Phaser + ES6 + Webpack'
-    let banner = this.add.text(this.world.centerX, this.game.height - 80, bannerText)
-    banner.font = 'Bangers'
-    banner.padding.set(10, 16)
-    banner.fontSize = 40
-    banner.fill = '#77BFA3'
-    banner.smoothed = false
-    banner.anchor.setTo(0.5)
+    // TODO: Move to HexTileLayer class
+    hexGrid = this.game.add.group()
 
-    this.mushroom = new Mushroom({
-      game: this.game,
-      x: this.world.centerX,
-      y: this.world.centerY,
-      asset: 'mushroom'
-    })
+    let worldWidth = 10
+    let worldHeight = 10
+    let verticalOffset = hexTileHeight * 3 / 4
+    let horizontalOffset = hexTileWidth
+    let startX
+    let startY
+    let startXInit = hexTileWidth / 2
+    let startYInit = hexTileHeight / 2
 
-    this.game.add.existing(this.mushroom)
+    let hexTile
+    for (let i = 0; i < worldHeight; i++) {
+      if (i % 2 !== 0) {
+        startX = 2 * startXInit
+      } else {
+        startX = startXInit
+      }
+      startY = startYInit + (i * verticalOffset)
+      for (let j = 0; j < worldWidth; j++) {
+        hexTile = new HexTile({
+          game: this.game,
+          x: startX,
+          y: startY,
+          asset: 'hex',
+          isVertical: false,
+          i: i,
+          j: j,
+        })
+        hexGrid.add(hexTile)
+
+        startX += horizontalOffset
+      }
+    }
+
+    hexGrid.x = 50
+    hexGrid.y = 50
+  }
+
+  preload () {
+    this.load.image('hex', 'assets/images/hexsmall.png')
   }
 
   render () {
-    if (__DEV__) {
-      this.game.debug.spriteInfo(this.mushroom, 32, 32)
-    }
+
   }
 }
