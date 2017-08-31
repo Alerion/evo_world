@@ -13,32 +13,30 @@ export default class extends Phaser.State {
         // TODO: Move to HexTileLayer class
         hexGrid = this.game.add.group()
 
-        let worldWidth = 10
-        let worldHeight = 10
         let verticalOffset = hexTileHeight * 3 / 4
         let horizontalOffset = hexTileWidth
         let startX
         let startY
         let startXInit = hexTileWidth / 2
         let startYInit = hexTileHeight / 2
-
+        let world = this.game.gameWorld
         let hexTile
-        for (let i = 0; i < worldHeight; i++) {
+
+        for (let i = 0; i < world.height; i++) {
             if (i % 2 !== 0) {
                 startX = 2 * startXInit
             } else {
                 startX = startXInit
             }
             startY = startYInit + (i * verticalOffset)
-            for (let j = 0; j < worldWidth; j++) {
+            for (let j = 0; j < world.width; j++) {
                 hexTile = new HexTile({
                     game: this.game,
                     x: startX,
                     y: startY,
                     asset: 'hex',
                     isVertical: false,
-                    i: i,
-                    j: j,
+                    hex: world.layer.get(i, j),
                 })
                 hexGrid.add(hexTile)
 
@@ -52,6 +50,10 @@ export default class extends Phaser.State {
 
     preload () {
         this.load.image('hex', 'assets/images/hexsmall.png')
+    }
+
+    update (game) {
+        game.gameWorld.update(game.time.physicsElapsed)
     }
 
     render () {}

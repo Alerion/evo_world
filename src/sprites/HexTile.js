@@ -3,11 +3,14 @@ import Phaser from 'phaser'
 // TODO: Replace with Polygon with custom background color and size
 
 export default class extends Phaser.Sprite {
-    constructor ({ game, x, y, asset, isVertical, i, j }) {
+    constructor ({ game, x, y, asset, isVertical, hex }) {
         super(game, x, y, asset)
+
+        this.hex = hex
+
         this.anchor.setTo(0.5, 0.5)
 
-        this.tileTag = game.make.text(0, 0, Math.round(x) + '\n' + Math.round(y), {fontSize: 11})
+        this.tileTag = game.make.text(0, 0, this.hex.x, {fontSize: 11})
         this.tileTag.anchor.setTo(0.5, 0.5)
         this.tileTag.addColor('#ffffff', 0)
         if (isVertical) {
@@ -15,8 +18,6 @@ export default class extends Phaser.Sprite {
         }
         this.addChild(this.tileTag)
         this.tileTag.visible = true
-
-        this.name = 'tile' + i + '_' + j
 
         if (isVertical) {
             this.rotation = Math.PI / 2
@@ -36,5 +37,9 @@ export default class extends Phaser.Sprite {
     rollOver () {
         this.scale.x = 0.9
         this.scale.y = 0.9
+    }
+
+    update () {
+        this.tileTag.text = Math.round(this.hex.x)
     }
 }

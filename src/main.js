@@ -3,7 +3,7 @@ import 'p2'
 import Phaser from 'phaser'
 
 import GameState from './states/Game'
-
+import World from './engine/World'
 import config from './config'
 
 class Game extends Phaser.Game {
@@ -14,8 +14,10 @@ class Game extends Phaser.Game {
 
         super(width, height, Phaser.CANVAS, 'content', null, true)
 
-        this.state.add('Game', GameState, false)
+        // FIXME: Phaser occupied best names
+        this.gameWorld = new World(config.world)
 
+        this.state.add('Game', GameState)
         this.state.start('Game')
     }
 }
