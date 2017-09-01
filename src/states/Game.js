@@ -1,5 +1,8 @@
 import Phaser from 'phaser'
+import ReactDOM from 'react-dom'
+import React from 'react'
 import HexTile from '../sprites/HexTile'
+import HexPanel from '../panels/HexPanel'
 
 // FIXME: Refactor this copy-pasted shit code
 let hexTileHeight = 61 // this is for horizontal
@@ -7,7 +10,10 @@ let hexTileWidth = Math.sqrt(3) / 2 * hexTileHeight // for horizontal
 let hexGrid
 
 export default class extends Phaser.State {
-    init () {}
+    init () {
+        this.selectedHex = null
+        this.panel = document.getElementById('panel')
+    }
 
     create () {
         // TODO: Move to HexTileLayer class
@@ -44,8 +50,11 @@ export default class extends Phaser.State {
             }
         }
 
-        hexGrid.x = 50
-        hexGrid.y = 50
+        hexGrid.x = 5
+        hexGrid.y = 5
+
+        hexGrid.inputEnableChildren = true
+        hexGrid.onChildInputDown.add(this.selectHex, this)
     }
 
     preload () {
@@ -54,7 +63,16 @@ export default class extends Phaser.State {
 
     update (game) {
         game.gameWorld.update(game.time.physicsElapsed)
+        if (this.selectedHex) {
+            ReactDOM.render(
+                React.createElement(HexPanel, {hex: this.selectedHex}),
+                this.panel)
+        }
     }
 
     render () {}
+
+    selectHex (hexTile) {
+        this.selectedHex = hexTile.hex
+    }
 }

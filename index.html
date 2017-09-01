@@ -9,17 +9,21 @@
     <meta name="MobileOptimized" content="320">
     <meta http-equiv="cleartype" content="on">
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <style>
-        html,
-        body {
-            margin: 0;
-            padding: 0;
+        html,body{height:100%;}
+        .row, #content {
+            height:100%;
         }
+
     </style>
 </head>
 
 <body>
-    <div id="content"></div>
+    <div class="row">
+        <div class="col-md-8" id="content"></div>
+        <div class="col-md-4" id="panel"></div>
+    </div>
     <script src="dist/vendor.bundle.js"></script>
     <script src="dist/bundle.js"></script>
 </body>

@@ -18,5 +18,6 @@
   },
   "settings": {
     "import/core-modules": [ "phaser", "pixi", "p2" ]
-  }
+  },
+  "plugins": [ "react" ]
 }

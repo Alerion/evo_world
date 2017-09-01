@@ -39,6 +39,10 @@ export default class extends Phaser.Sprite {
         this.scale.y = 0.9
     }
 
+    select () {
+        this.game.selectedHex = this
+    }
+
     update () {
         this.tileTag.text = Math.round(this.hex.x)
     }

@@ -8,14 +8,17 @@ import config from './config'
 
 class Game extends Phaser.Game {
     constructor () {
-        const docElement = document.documentElement
-        const width = docElement.clientWidth > config.gameWidth ? config.gameWidth : docElement.clientWidth
-        const height = docElement.clientHeight > config.gameHeight ? config.gameHeight : docElement.clientHeight
+        const container = document.getElementById('content')
 
+        const width = container.clientWidth > config.gameWidth ? config.gameWidth : container.clientWidth
+        const height = container.clientHeight > config.gameHeight ? config.gameHeight : container.clientHeight
+        console.log(width, height)
         super(width, height, Phaser.CANVAS, 'content', null, true)
 
         // FIXME: Phaser occupied best names
         this.gameWorld = new World(config.world)
+        // Used to render selected hex
+        this.selectedHex = null
 
         this.state.add('Game', GameState)
         this.state.start('Game')
