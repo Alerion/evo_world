@@ -9,10 +9,9 @@ import config from './config'
 class Game extends Phaser.Game {
     constructor () {
         const container = document.getElementById('content')
-
         const width = container.clientWidth > config.gameWidth ? config.gameWidth : container.clientWidth
         const height = container.clientHeight > config.gameHeight ? config.gameHeight : container.clientHeight
-        console.log(width, height)
+
         super(width, height, Phaser.CANVAS, 'content', null, true)
 
         // FIXME: Phaser occupied best names
