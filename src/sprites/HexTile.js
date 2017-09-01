@@ -24,8 +24,8 @@ export default class extends Phaser.Sprite {
         }
         this.inputEnabled = true
         this.input.useHandCursor = true
-        this.events.onInputOut.add(this.rollOut, this)
-        this.events.onInputOver.add(this.rollOver, this)
+        // this.events.onInputOut.add(this.rollOut, this)
+        // this.events.onInputOver.add(this.rollOver, this)
         this.marked = false
     }
 
