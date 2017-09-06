@@ -17,10 +17,12 @@
 
         .row, #content, .container-fluid {
             height:100%;
+            margin: 0;
+            padding: 0;
         }
 
-        #content {
-            padding: 0;
+        #panel {
+            padding: 5px;
         }
     </style>
 </head>
@@ -28,8 +30,8 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-8" id="content"></div>
-            <div class="col-md-4" id="panel"></div>
+            <div class="col-md-9" id="content"></div>
+            <div class="col-md-3" id="panel">Click on hex to select</div>
         </div>
     </div>
     <script src="dist/vendor.bundle.js"></script>

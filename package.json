@@ -30,6 +30,7 @@
     "webpack": "^3.4.1"
   },
   "dependencies": {
+    "lex": "^1.7.9",
     "phaser-ce": "^2.8.3",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",

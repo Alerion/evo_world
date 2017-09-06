@@ -1,16 +1,17 @@
-import Phaser from 'phaser'
+import CellFactory from './CellFactory.js'
+import Resource from './Resource.js'
+import RandomGenerator from '../random.js'
 
 class Hex {
-    constructor ({ i, j, dx }) {
+    constructor ({ i, j, resources, cell }) {
         this.i = i
         this.j = j
-
-        this.x = 0
-        this.dx = dx
+        this.resources = resources
+        this.cell = cell
     }
 
     update (delta) {
-        this.x += this.dx * delta
+
     }
 }
 
@@ -43,20 +44,37 @@ class HexCollection {
 }
 
 class World {
-    constructor ({ seed, width, height }) {
+    constructor ({ seed, width, height, resources, cells }) {
         this.seed = seed
         this.width = width
         this.height = height
-        this.rnd = new Phaser.RandomDataGenerator(seed)
+        this.rnd = new RandomGenerator(seed)
+
+        this.resources = {}
+        resources.list.forEach((item) => {
+            this.resources[item.name] = new Resource(item)
+        })
+
+        this.cells = {}
+        cells.list.forEach((item) => {
+            this.cells[item.name] = new CellFactory(item)
+        })
 
         this.layer = new HexCollection({ width, height })
 
         for (let i = 0; i < height; i++) {
             for (let j = 0; j < width; j++) {
-                let hex = new Hex({
+                let cell
+                const cellName = this.rnd.randomCell(cells.initial)
+
+                if (cellName) {
+                    cell = this.cells[cellName].create()
+                }
+                const hex = new Hex({
                     i: i,
                     j: j,
-                    dx: this.rnd.normal(),
+                    resources: Object.assign({}, resources.initial),
+                    cell: cell,
                 })
                 this.layer.set(i, j, hex)
             }
@@ -64,9 +82,7 @@ class World {
     }
 
     update (delta) {
-        this.layer.forEach(function (hex) {
-            hex.update(delta)
-        })
+
     }
 }
 

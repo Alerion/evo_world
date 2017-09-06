@@ -44,6 +44,8 @@ export default class extends Phaser.Sprite {
     }
 
     update () {
-        this.tileTag.text = Math.round(this.hex.x)
+        if (this.hex.cell) {
+            this.tileTag.text = this.hex.cell.name
+        }
     }
 }
