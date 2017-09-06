@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import CellFactory from './CellFactory.js'
 import Resource from './Resource.js'
 import RandomGenerator from '../random.js'
@@ -11,7 +12,34 @@ class Hex {
     }
 
     update (delta) {
+        if (this.cell) {
+            _.each(this.cell.reactions, (reaction) => this.applyReaction(reaction, delta))
+        }
+    }
 
+    applyReaction (reaction, delta) {
+        const inputs = reaction.inputs
+        const output = reaction.output
+        const consumed = {}
+
+        _.each(inputs, (value, key) => {
+            const amount = value * delta
+            if (this.resources[key] && this.resources[key] >= amount) {
+                consumed[key] = amount
+            } else {
+                consumed[key] = 0
+            }
+        })
+
+        if (_.every(_.values(consumed))) {
+            _.each(consumed, (value, key) => {
+                this.resources[key] -= value
+            })
+
+            _.each(output, (value, key) => {
+                this.resources[key] += value * delta
+            })
+        }
     }
 }
 
@@ -82,7 +110,9 @@ class World {
     }
 
     update (delta) {
-
+        this.layer.forEach(function (hex) {
+            hex.update(delta)
+        })
     }
 }
 

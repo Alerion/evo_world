@@ -5,8 +5,8 @@ export default {
 
     world: {
         seed: '1234567890',
-        width: 30,
-        height: 30,
+        width: 10,
+        height: 10,
         resources: {
             list: [{
                 name: 'A',
@@ -24,14 +24,22 @@ export default {
             initial: {
                 A: 10,
                 B: 10,
+                C: 0,
             },
         },
         cells: {
             list: [{
                 name: 'Rael',
-                reactions: [
-                    '2A + B => C',
-                ],
+                reactions: [{
+                    // 2A + B => C
+                    inputs: {
+                        A: 2,
+                        B: 1,
+                    },
+                    output: {
+                        C: 1,
+                    },
+                }],
             }],
             initial: {
                 Rael: 0.1,
