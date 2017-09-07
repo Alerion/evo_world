@@ -47,3 +47,7 @@ This will optimize and minimize the compiled bundle.
 # Project structure
 
 Keep all simulation mechanic and calculations in engine folder.
+
+# Useful links
+
+- http://www.redblobgames.com/grids/hexagons/

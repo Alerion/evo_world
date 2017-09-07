@@ -33,6 +33,7 @@
     "lex": "^1.7.9",
     "phaser-ce": "^2.8.3",
     "react": "^15.6.1",
+    "react-bootstrap": "^0.31.3",
     "react-dom": "^15.6.1",
     "webfontloader": "^1.6.28"
   }

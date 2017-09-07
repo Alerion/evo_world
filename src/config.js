@@ -8,8 +8,8 @@ const CONFIG = {
 
     world: {
         seed: '1234567890',
-        width: 10,
-        height: 10,
+        width: 20,
+        height: 20,
         resources: {
             // Reactions output is split to neighbor hexes. This values tells
             // what part of output is split to six neighbors. 0 - nothig split to neighbors,
