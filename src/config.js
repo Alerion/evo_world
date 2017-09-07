@@ -11,6 +11,10 @@ const CONFIG = {
         width: 10,
         height: 10,
         resources: {
+            // Reactions output is split to neighbor hexes. This values tells
+            // what part of output is split to six neighbors. 0 - nothig split to neighbors,
+            // 1 - all split and no output to current hex with cell.
+            updateSplitRatio: 0.5,
             list: [{
                 name: 'A',
                 isEnergy: false,
