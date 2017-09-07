@@ -15,6 +15,7 @@ class Game extends Phaser.Game {
         super(width, height, Phaser.CANVAS, 'content', null, true)
 
         // FIXME: Phaser occupied best names
+        this.config = config
         this.gameWorld = new World(config.world)
         // Used to render selected hex
         this.selectedHex = null

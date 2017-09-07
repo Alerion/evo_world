@@ -13,15 +13,68 @@ export default class extends Phaser.State {
         this.selectedHex = null
         this.hexGrid = null
         this.panel = document.getElementById('panel')
+        this.world = this.game.gameWorld
 
         this._mapWidth = null
         this._mapHeight = null
+        this._updateWorldTimer = null
     }
 
     create () {
         const game = this.game
 
+        this.initHexGrid()
+
+        this._mapWidth = this.world.width * hexTileWidth + hexTileWidth / 2
+        this._mapHeight = this.world.height * hexTileHeight * 0.75 + hexTileHeight * 0.25
+
+        game.input.onDown.add(this._startDrag, this)
+
+        this._updateWorldTimer = game.time.create({autoDestroy: false})
+        this._updateWorldTimer.loop(game.config.updateDelay, this.updateWorld, this)
+
+        this.renderHexPanel()
+    }
+
+    preload () {
+        this.load.image('hex', 'assets/images/hexsmall.png')
+    }
+
+    update () {}
+
+    render () {}
+
+    updateWorld (event) {
+        // It is not real delta between calls, but it does not matter for simulation.
+        // Can be fixed later
+        this.world.update(this.game.config.updateDelay / 1000)
+        if (this.selectedHex) {
+            this.renderHexPanel()
+        }
+    }
+
+    renderHexPanel () {
+        ReactDOM.render(
+            React.createElement(
+                HexPanel, {
+                    hex: this.selectedHex,
+                    start: this.startSimulation.bind(this),
+                    stop: this.stopSimulation.bind(this),
+                    reset: this.resetWorld.bind(this),
+                    running: this._updateWorldTimer.running && !this._updateWorldTimer.paused,
+                }
+            ),
+            this.panel)
+    }
+
+    initHexGrid () {
         // TODO: Move to HexTileLayer class
+        const game = this.game
+        const world = this.world
+
+        if (this.hexGrid) {
+            this.hexGrid.destroy()
+        }
         this.hexGrid = game.add.group()
 
         let verticalOffset = hexTileHeight * 3 / 4
@@ -30,7 +83,7 @@ export default class extends Phaser.State {
         let startY
         let startXInit = hexTileWidth / 2
         let startYInit = hexTileHeight / 2
-        let world = game.gameWorld
+
         let hexTile
 
         for (let i = 0; i < world.height; i++) {
@@ -55,47 +108,51 @@ export default class extends Phaser.State {
             }
         }
 
-        this._mapWidth = world.width * hexTileWidth + hexTileWidth / 2
-        this._mapHeight = world.height * hexTileHeight * 0.75 + hexTileHeight * 0.25
-
         this.hexGrid.inputEnableChildren = true
         this.hexGrid.onChildInputDown.add(this.selectHex, this)
-
-        game.input.onDown.add(this.startDrag, this)
     }
 
-    preload () {
-        this.load.image('hex', 'assets/images/hexsmall.png')
-    }
-
-    update (game) {
-        game.gameWorld.update(game.time.physicsElapsed)
+    resetWorld () {
+        this.world.reset()
+        this.initHexGrid()
         if (this.selectedHex) {
-            ReactDOM.render(
-                React.createElement(HexPanel, {hex: this.selectedHex}),
-                this.panel)
+            this.selectedHex = this.world.layer.get(this.selectedHex.i, this.selectedHex.j)
         }
+        this.renderHexPanel()
     }
 
-    render () {}
+    startSimulation () {
+        if (this._updateWorldTimer.running) {
+            this._updateWorldTimer.resume()
+        } else {
+            this._updateWorldTimer.start()
+        }
+        this.renderHexPanel()
+    }
+
+    stopSimulation () {
+        this._updateWorldTimer.pause()
+        this.renderHexPanel()
+    }
 
     selectHex (hexTile) {
         this.selectedHex = hexTile.hex
+        this.renderHexPanel()
     }
 
-    startDrag () {
+    _startDrag () {
         const game = this.game
         this._startX = game.input.worldX
         this._startY = game.input.worldY
         this.hexGrid.saveX = this.hexGrid.x
         this.hexGrid.saveY = this.hexGrid.y
         // updating listeners
-        game.input.onDown.remove(this.startDrag, this)
-        game.input.onUp.add(this.stopDrag, this)
-        game.input.addMoveCallback(this.dragMap, this)
+        game.input.onDown.remove(this._startDrag, this)
+        game.input.onUp.add(this._stopDrag, this)
+        game.input.addMoveCallback(this._dragMap, this)
     }
 
-    dragMap () {
+    _dragMap () {
         const game = this.game
         const hexGrid = this.hexGrid
         const currentX = game.input.worldX
@@ -122,10 +179,10 @@ export default class extends Phaser.State {
     }
 
     // the player stops touching the map
-    stopDrag () {
+    _stopDrag () {
         const game = this.game
-        game.input.onDown.add(this.startDrag, this)
-        game.input.onUp.remove(this.stopDrag, this)
-        game.input.deleteMoveCallback(this.dragMap, this)
+        game.input.onDown.add(this._startDrag, this)
+        game.input.onUp.remove(this._stopDrag, this)
+        game.input.deleteMoveCallback(this._dragMap, this)
     }
 }

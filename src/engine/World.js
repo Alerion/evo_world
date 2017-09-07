@@ -72,11 +72,15 @@ class HexCollection {
 }
 
 class World {
+    // Arguments example you can find in config.js
     constructor ({ seed, width, height, resources, cells }) {
         this.seed = seed
         this.width = width
         this.height = height
+        this.cellsConfig = cells
+        this.resourcesConfig = resources
         this.rnd = new RandomGenerator(seed)
+        this.rnd.sow(this.seed)
 
         this.resources = {}
         resources.list.forEach((item) => {
@@ -89,11 +93,20 @@ class World {
         })
 
         this.layer = new HexCollection({ width, height })
+        this.initialize()
+    }
 
-        for (let i = 0; i < height; i++) {
-            for (let j = 0; j < width; j++) {
+    update (delta) {
+        this.layer.forEach(function (hex) {
+            hex.update(delta)
+        })
+    }
+
+    initialize () {
+        for (let i = 0; i < this.height; i++) {
+            for (let j = 0; j < this.width; j++) {
                 let cell
-                const cellName = this.rnd.randomCell(cells.initial)
+                const cellName = this.rnd.randomCell(this.cellsConfig.initial)
 
                 if (cellName) {
                     cell = this.cells[cellName].create()
@@ -101,7 +114,7 @@ class World {
                 const hex = new Hex({
                     i: i,
                     j: j,
-                    resources: Object.assign({}, resources.initial),
+                    resources: Object.assign({}, this.resourcesConfig.initial),
                     cell: cell,
                 })
                 this.layer.set(i, j, hex)
@@ -109,10 +122,9 @@ class World {
         }
     }
 
-    update (delta) {
-        this.layer.forEach(function (hex) {
-            hex.update(delta)
-        })
+    reset () {
+        this.rnd.sow(this.seed)
+        this.initialize()
     }
 }
 
