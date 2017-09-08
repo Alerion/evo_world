@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "webpack",
     "deploy": "webpack --config webpack.production.config.js",
-    "test": "eslint ./src/**/**.js"
+    "test": "eslint ./src/**/**.js ./src/**/**.jsx"
   },
   "license": "MIT",
   "devDependencies": {
@@ -22,15 +22,18 @@
     "browser-sync-webpack-plugin": "^1.2.0",
     "eslint": "^4.3.0",
     "eslint-config-standard": "^10.2.1",
+    "eslint-import-resolver-webpack": "^0.8.3",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^7.3.0",
     "eslint-plugin-standard": "^3.0.1",
     "expose-loader": "^0.7.3",
     "webpack": "^3.4.1"
   },
   "dependencies": {
     "lex": "^1.7.9",
+    "numeral": "^2.0.6",
     "phaser-ce": "^2.8.3",
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.3",

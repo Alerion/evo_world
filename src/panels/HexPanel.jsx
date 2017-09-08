@@ -2,9 +2,9 @@ import React from 'react'
 import _ from 'lodash'
 import numeral from 'numeral'
 import {
-    ButtonToolbar, Button, Glyphicon, Modal, Badge, ListGroup, ListGroupItem
+    ButtonToolbar, Button, Glyphicon, Modal, Badge, ListGroup, ListGroupItem,
 } from 'react-bootstrap'
-import CellInfoModal from './CellInfo'
+import CellInfoModal from './CellInfoModal'
 
 class HexPanel extends React.Component {
     constructor (props) {
@@ -51,17 +51,14 @@ class HexPanel extends React.Component {
         )
 
         let cell = ''
+        let cellModal = ''
         if (hex.cell) {
             cell = <div>
                 {hex.cell.name} ({hex.i}, {hex.j})
                 <Button onClick={this.openCellInfo} bsStyle="link"><Glyphicon glyph="question-sign"/></Button>
             </div>
-        }
 
-        return <div>
-            <ListGroup>{resources}</ListGroup>
-            {cell}
-            <Modal show={this.state.showCellInfo} onHide={this.closeCellInfo}>
+            cellModal = <Modal show={this.state.showCellInfo} onHide={this.closeCellInfo}>
                 <Modal.Header closeButton>
                     <Modal.Title>{hex.cell.name}</Modal.Title>
                 </Modal.Header>
@@ -69,6 +66,12 @@ class HexPanel extends React.Component {
                     <h4>Reactions</h4>
                 </Modal.Body>
             </Modal>
+        }
+
+        return <div>
+            <ListGroup>{resources}</ListGroup>
+            {cell}
+            {cellModal}
         </div>
     }
 

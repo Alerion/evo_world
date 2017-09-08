@@ -3,21 +3,25 @@
   "extends": "standard",
   "parserOptions": {
     "ecmaVersion": 6,
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
   "env": {
-    "browser": true
+    "browser": true,
+    "es6": true
   },
   "rules": {
     "import/no-unresolved": [2],
     "comma-dangle": ["error", "always-multiline"],
-    "indent": ["error", 4]
-  },
-  "globals": {
-    "phaser": true
+    "indent": ["error", 4],
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error"
   },
   "settings": {
-    "import/core-modules": [ "phaser", "pixi", "p2" ]
+    "import/core-modules": ["phaser", "pixi", "p2"],
+    "import/resolver": "webpack"
   },
-  "plugins": [ "react" ]
+  "plugins": ["react"]
 }
