@@ -1,9 +1,10 @@
 import _ from 'lodash'
 
 class Cell {
-    constructor ({ name, reactions, resources }) {
+    constructor ({ name, reactions, resources, divisionConditions }) {
         this.name = name
         this.reactions = reactions
+        this.divisionConditions = divisionConditions
         this.resources = resources
         this.resourcesDelta = {}
         _.each(this.resources, (value, key) => {
@@ -47,6 +48,31 @@ class Cell {
             })
         }
     }
+
+    canDivide () {
+        if (_.isEmpty(this.divisionConditions)) {
+            return false
+        }
+
+        return _.every(this.divisionConditions, (value, key) => {
+            return this.resources[key] >= value
+        })
+    }
+
+    divide () {
+        const initilResources = {}
+        _.each(this.resources, (value, key) => {
+            this.resources[key] = value / 2
+            initilResources[key] = value / 2
+        })
+
+        return new Cell({
+            name: this.name,
+            reactions: this.reactions,
+            resources: initilResources,
+            divisionConditions: this.divisionConditions,
+        })
+    }
 }
 
 class CellFactory {
@@ -67,6 +93,7 @@ class CellFactory {
             name: this.config.name,
             reactions: this.config.reactions,
             resources: Object.assign({}, this.initilResources),
+            divisionConditions: this.config.divisionConditions,
         })
         return cell
     }

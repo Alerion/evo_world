@@ -23,7 +23,22 @@ class Hex {
 
     calcUpdate (delta) {
         if (this.cell) {
-            this.cell.applyReactions(delta, this)
+            let divided = false
+            if (this.cell.canDivide()) {
+                const freeCells = _.filter(this.neighbors, (hex) => {
+                    return !hex.cell
+                })
+
+                if (!_.isEmpty(freeCells)) {
+                    const newCellHex = _.shuffle(freeCells)[0]
+                    newCellHex.cell = this.cell.divide()
+                    divided = true
+                }
+            }
+
+            if (!divided) {
+                this.cell.applyReactions(delta, this)
+            }
         }
     }
 
