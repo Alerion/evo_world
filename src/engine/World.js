@@ -4,13 +4,12 @@ import Resource from './Resource.js'
 import RandomGenerator from '../random.js'
 
 class Hex {
-    constructor ({ i, j, resources, cell, updateSplitRatio }) {
+    constructor ({ i, j, resources, cell }) {
         this.i = i
         this.j = j
         this.resources = resources
         this.cell = cell
         this.neighbors = []
-        this.updateSplitRatio = updateSplitRatio
 
         this.resourcesDelta = {}
         _.each(this.resources, (value, key) => {
@@ -24,7 +23,7 @@ class Hex {
 
     calcUpdate (delta) {
         if (this.cell) {
-            _.each(this.cell.reactions, (reaction) => this.applyReaction(reaction, delta))
+            this.cell.applyReactions(delta, this)
         }
     }
 
@@ -33,34 +32,9 @@ class Hex {
             this.resources[key] += value
             this.resourcesDelta[key] = 0
         })
-    }
 
-    applyReaction (reaction, delta) {
-        const inputs = reaction.inputs
-        const output = reaction.output
-        const consumed = {}
-
-        _.each(inputs, (value, key) => {
-            const amount = value * delta
-            if (this.resources[key] && this.resources[key] >= amount) {
-                consumed[key] = amount
-            } else {
-                consumed[key] = 0
-            }
-        })
-
-        if (_.every(_.values(consumed))) {
-            _.each(consumed, (value, key) => {
-                this.resourcesDelta[key] -= value
-            })
-
-            _.each(output, (value, key) => {
-                let resDelta = value * delta
-                this.resourcesDelta[key] += resDelta * (1 - this.updateSplitRatio)
-                _.each(this.neighbors, (neighbor) => {
-                    neighbor.resourcesDelta[key] += resDelta * this.updateSplitRatio / 6
-                })
-            })
+        if (this.cell) {
+            this.cell.applyUpdate()
         }
     }
 }
@@ -144,7 +118,10 @@ class World {
 
         this.cells = {}
         cells.list.forEach((item) => {
-            this.cells[item.name] = new CellFactory(item)
+            this.cells[item.name] = new CellFactory({
+                config: item,
+                resourcesConfig: this.resourcesConfig,
+            })
         })
 
         this.layer = new HexCollection({ width, height })
@@ -179,7 +156,6 @@ class World {
                     j: j,
                     resources: Object.assign({}, this.resourcesConfig.initial),
                     cell: cell,
-                    updateSplitRatio: this.resourcesConfig.updateSplitRatio,
                 })
                 this.layer.set(i, j, hex)
             }

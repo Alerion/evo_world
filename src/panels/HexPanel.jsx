@@ -52,10 +52,18 @@ class HexPanel extends React.Component {
 
         let cell = ''
         let cellModal = ''
+
         if (hex.cell) {
+            const cellResources = _.map(hex.cell.resources, (value, name) =>
+                <ListGroupItem key={name}>
+                    {name} <Badge>{numeral(value).format('0')}</Badge>
+                </ListGroupItem>
+            )
+
             cell = <div>
                 {hex.cell.name} ({hex.i}, {hex.j})
                 <Button onClick={this.openCellInfo} bsStyle="link"><Glyphicon glyph="question-sign"/></Button>
+                <ListGroup>{cellResources}</ListGroup>
             </div>
 
             cellModal = <Modal show={this.state.showCellInfo} onHide={this.closeCellInfo}>
