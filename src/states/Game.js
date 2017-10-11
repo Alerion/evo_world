@@ -5,10 +5,10 @@ import HexTile from '../sprites/HexTile'
 import HexPanel from '../panels/HexPanel'
 
 // FIXME: Refactor this copy-pasted shit code
-let hexTileHeight = 61 // this is for horizontal
+let hexTileHeight = 60 // this is for horizontal
 let hexTileWidth = Math.sqrt(3) / 2 * hexTileHeight // for horizontal
 
-export default class extends Phaser.State {
+class Game extends Phaser.State {
     init () {
         this.selectedHex = null
         this.hexGrid = null
@@ -36,9 +36,7 @@ export default class extends Phaser.State {
         this.renderHexPanel()
     }
 
-    preload () {
-        this.load.image('hex', 'assets/images/hexsmall.png')
-    }
+    preload () {}
 
     update () {}
 
@@ -83,6 +81,7 @@ export default class extends Phaser.State {
         let startY
         let startXInit = hexTileWidth / 2
         let startYInit = hexTileHeight / 2
+        let radius = hexTileHeight / 2
 
         let hexTile
 
@@ -96,10 +95,9 @@ export default class extends Phaser.State {
             for (let j = 0; j < world.width; j++) {
                 hexTile = new HexTile({
                     game: game,
-                    x: startX,
-                    y: startY,
-                    asset: 'hex',
-                    isVertical: false,
+                    x: startX - radius,
+                    y: startY - radius,
+                    radius: radius,
                     hex: world.layer.get(i, j),
                 })
                 this.hexGrid.add(hexTile)
@@ -186,3 +184,5 @@ export default class extends Phaser.State {
         game.input.deleteMoveCallback(this._dragMap, this)
     }
 }
+
+export default Game
