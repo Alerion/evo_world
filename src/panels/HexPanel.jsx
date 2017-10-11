@@ -6,6 +6,7 @@ import {
     MenuItem,
 } from 'react-bootstrap'
 import CellInfoModal from './CellInfoModal'
+import {reactionToText} from '../utils.js'
 
 class HexPanel extends React.Component {
     constructor (props) {
@@ -81,12 +82,22 @@ class HexPanel extends React.Component {
                 <ListGroup>{cellResources}</ListGroup>
             </div>
 
+            const reactionsList = _.map(hex.cell.reactions, (reaction, index) => {
+                return <li key={index}>{reactionToText(reaction)}</li>
+            })
+            const divisionConditionsList = _.map(hex.cell.divisionConditions, (val, resource) => {
+                return <li key={resource}>{`${resource} = ${val}`}</li>
+            })
             cellModal = <Modal show={this.state.showCellInfo} onHide={this.closeCellInfo}>
                 <Modal.Header closeButton>
                     <Modal.Title>{hex.cell.name}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4>Reactions</h4>
+                    <h4>Reactions (for second)</h4>
+                    <ul>{reactionsList}</ul>
+
+                    <h4>Division conditions</h4>
+                    <ul>{divisionConditionsList}</ul>
                 </Modal.Body>
             </Modal>
         }
