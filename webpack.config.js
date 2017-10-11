@@ -1,6 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 var BrowserSyncPlugin = require('browser-sync-webpack-plugin')
+var CopyWebpackPlugin = require('copy-webpack-plugin')
 
 // Phaser webpack config
 var phaserModule = path.join(__dirname, '/node_modules/phaser-ce/')
@@ -34,11 +35,15 @@ module.exports = {
             name: 'vendor'/* chunkName= */,
             filename: 'vendor.bundle.js'/* filename= */,
         }),
+        new CopyWebpackPlugin([{
+            from: path.resolve(__dirname, 'index.html'),
+            to: path.resolve(__dirname, 'dist'),
+        }]),
         new BrowserSyncPlugin({
             host: process.env.IP || 'localhost',
             port: process.env.PORT || 3000,
             server: {
-                baseDir: ['./', './build'],
+                baseDir: ['./dist'],
             },
         }),
     ],
