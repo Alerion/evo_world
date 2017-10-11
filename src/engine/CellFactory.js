@@ -1,8 +1,9 @@
 import _ from 'lodash'
 
 class Cell {
-    constructor ({ name, reactions, resources, divisionConditions }) {
+    constructor ({ name, reactions, resources, divisionConditions, color }) {
         this.name = name
+        this.color = color
         this.reactions = reactions
         this.divisionConditions = divisionConditions
         this.resources = resources
@@ -76,9 +77,10 @@ class Cell {
 }
 
 class CellFactory {
-    constructor ({ config, resourcesConfig }) {
+    constructor ({ config, resourcesConfig, color }) {
         this.config = config
         this.resourcesConfig = resourcesConfig
+        this.color = color
 
         this.initilResources = {}
         _.each(resourcesConfig.list, (item) => {
@@ -94,6 +96,7 @@ class CellFactory {
             reactions: this.config.reactions,
             resources: Object.assign({}, this.initilResources),
             divisionConditions: this.config.divisionConditions,
+            color: this.color,
         })
         return cell
     }

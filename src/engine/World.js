@@ -3,6 +3,15 @@ import CellFactory from './CellFactory.js'
 import Resource from './Resource.js'
 import RandomGenerator from '../random.js'
 
+const COLORS = [
+    0x8dd3c7, 0xffffb3, 0xbebada, 0xfb8072, 0x80b1d3, 0xfdb462, 0xb3de69, 0xfccde5, 0xd9d9d9,
+    0xbc80bd, 0xccebc5, 0xffed6f,
+]
+/*const COLORS = [
+    0xa6cee3, 0x1f78b4, 0xb2df8a, 0x33a02c, 0xfb9a99, 0xe31a1c, 0xfdbf6f, 0xff7f00,
+    0xcab2d6, 0x6a3d9a, 0xffff99, 0xb15928,
+]*/
+
 class Hex {
     constructor ({ i, j, resources, cell }) {
         this.i = i
@@ -132,10 +141,11 @@ class World {
         })
 
         this.cells = {}
-        cells.list.forEach((item) => {
+        cells.list.forEach((item, index) => {
             this.cells[item.name] = new CellFactory({
                 config: item,
                 resourcesConfig: this.resourcesConfig,
+                color: COLORS[index],
             })
         })
 
