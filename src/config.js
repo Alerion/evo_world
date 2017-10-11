@@ -35,6 +35,13 @@ const CONFIG = {
                 C: 0,
                 e: 0,
             },
+            // maxDispay - used to calculate color and opacity for resource
+            maxDispay: {
+                A: 10,
+                B: 10,
+                C: 10,
+                e: 10,
+            },
         },
         // Lets use Elfs female names http://www.fantasynamegenerators.com/dnd-elf-names.php
         // Just for mem
@@ -74,6 +81,10 @@ const CONFIG = {
         },
     },
 }
+
+_.each(CONFIG.world.resources.maxDispay, (value, key) => {
+    CONFIG.world.resources.maxDispay[key] = value * RESOURCES_MULTIPLIER
+})
 
 _.each(CONFIG.world.resources.initial, (value, key) => {
     CONFIG.world.resources.initial[key] = value * RESOURCES_MULTIPLIER

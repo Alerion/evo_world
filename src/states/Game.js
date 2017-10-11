@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import Phaser from 'phaser'
 import ReactDOM from 'react-dom'
 import React from 'react'
@@ -5,8 +6,9 @@ import HexTile from '../sprites/HexTile'
 import HexPanel from '../panels/HexPanel'
 
 // FIXME: Refactor this copy-pasted shit code
-let hexTileHeight = 60 // this is for horizontal
-let hexTileWidth = Math.sqrt(3) / 2 * hexTileHeight // for horizontal
+const hexTileHeight = 60 // this is for horizontal
+const hexTileWidth = Math.sqrt(3) / 2 * hexTileHeight // for horizontal
+const MODE_CELLS = 'CELLS'
 
 class Game extends Phaser.State {
     init () {
@@ -14,6 +16,7 @@ class Game extends Phaser.State {
         this.hexGrid = null
         this.panel = document.getElementById('panel')
         this.world = this.game.gameWorld
+        this.displayMode = MODE_CELLS
 
         this._mapWidth = null
         this._mapHeight = null
@@ -52,6 +55,21 @@ class Game extends Phaser.State {
     }
 
     renderHexPanel () {
+        const displayChoices = [{
+            key: MODE_CELLS,
+            name: 'Cells',
+            active: (this.displayMode === MODE_CELLS),
+        }, {
+            key: '',
+        }]
+        _.each(this.world.resourcesConfig.list, (item) => {
+            displayChoices.push({
+                key: item.name,
+                name: item.name,
+                active: (this.displayMode === item.name),
+            })
+        })
+
         ReactDOM.render(
             React.createElement(
                 HexPanel, {
@@ -60,6 +78,8 @@ class Game extends Phaser.State {
                     stop: this.stopSimulation.bind(this),
                     reset: this.resetWorld.bind(this),
                     running: this._updateWorldTimer.running && !this._updateWorldTimer.paused,
+                    displayChoices: displayChoices,
+                    setDisplayMode: this.setDisplayMode.bind(this),
                 }
             ),
             this.panel)
@@ -94,11 +114,12 @@ class Game extends Phaser.State {
             startY = startYInit + (i * verticalOffset)
             for (let j = 0; j < world.width; j++) {
                 hexTile = new HexTile({
-                    game: game,
+                    game,
                     x: startX - radius,
                     y: startY - radius,
-                    radius: radius,
+                    radius,
                     hex: world.layer.get(i, j),
+                    getHexColor: this._getHexColor.bind(this),
                 })
                 this.hexGrid.add(hexTile)
 
@@ -136,6 +157,29 @@ class Game extends Phaser.State {
     selectHex (hexTile) {
         this.selectedHex = hexTile.hex
         this.renderHexPanel()
+    }
+
+    setDisplayMode (mode) {
+        this.displayMode = mode
+        this.renderHexPanel()
+        this.initHexGrid()
+    }
+
+    _getHexColor (hex) {
+        if (this.displayMode === MODE_CELLS) {
+            let color = 0xeeeeee
+            if (hex.cell) {
+                color = hex.cell.color
+            }
+            return {color, opcaity: 0.5}
+        } else {
+            const color = 0x8dd3c7
+            const resource = this.displayMode
+            const maxVal = this.world.resourcesConfig.maxDispay[resource]
+            const val = hex.resources[resource]
+            const opacity = 0.1 + val / maxVal * 0.9
+            return {color, opacity}
+        }
     }
 
     _startDrag () {

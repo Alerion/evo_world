@@ -2,7 +2,8 @@ import React from 'react'
 import _ from 'lodash'
 import numeral from 'numeral'
 import {
-    ButtonToolbar, Button, Glyphicon, Modal, Badge, ListGroup, ListGroupItem,
+    ButtonToolbar, Button, Glyphicon, Modal, Badge, ListGroup, ListGroupItem, DropdownButton,
+    MenuItem,
 } from 'react-bootstrap'
 import CellInfoModal from './CellInfoModal'
 
@@ -27,12 +28,26 @@ class HexPanel extends React.Component {
             </Button>
         }
 
+        const activeItem = _.find(this.props.displayChoices, item => item.active)
+        const displayFilter = <DropdownButton title={activeItem.name} id="display-filter"
+            onSelect={this.props.setDisplayMode}>
+            {this.props.displayChoices.map((item) => {
+                if (item.key === '') {
+                    return <MenuItem divider key="divider"/>
+                }
+                return <MenuItem eventKey={item.key} key={item.key} active={item.active}>
+                    {item.name}
+                </MenuItem>
+            })}
+        </DropdownButton>
+
         return <div>
             <ButtonToolbar>
                 {button}
                 <Button bsStyle="danger" onClick={this.props.reset}>
                     Reset <Glyphicon glyph="refresh"/>
                 </Button>
+                {displayFilter}
             </ButtonToolbar>
             {this.renderHex(this.props.hex)}
         </div>

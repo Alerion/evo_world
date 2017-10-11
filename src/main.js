@@ -17,8 +17,6 @@ class Game extends Phaser.Game {
         // FIXME: Phaser occupied best names
         this.config = config
         this.gameWorld = new World(config.world)
-        // Used to render selected hex
-        this.selectedHex = null
 
         this.state.add('Game', GameState)
         this.state.start('Game')

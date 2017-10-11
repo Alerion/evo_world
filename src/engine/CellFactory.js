@@ -72,6 +72,7 @@ class Cell {
             reactions: this.reactions,
             resources: initilResources,
             divisionConditions: this.divisionConditions,
+            color: this.color,
         })
     }
 }
