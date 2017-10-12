@@ -66,31 +66,37 @@ class HexPanel extends React.Component {
             </ListGroupItem>
         )
 
-        let cell = ''
+        let cell = hex.cell
+        let cellInfo = ''
         let cellModal = ''
 
-        if (hex.cell) {
-            const cellResources = _.map(hex.cell.resources, (value, name) =>
+        if (cell) {
+            const cellResources = _.map(cell.resources, (value, name) =>
                 <ListGroupItem key={name}>
                     {name} <Badge>{numeral(value).format('0')}</Badge>
                 </ListGroupItem>
             )
 
-            cell = <div>
-                {hex.cell.name} ({hex.i}, {hex.j})
+            cellInfo = <div>
+                {cell.name} ({hex.i}, {hex.j})
                 <Button onClick={this.openCellInfo} bsStyle="link"><Glyphicon glyph="question-sign"/></Button>
+                <ListGroup>
+                    <ListGroupItem key="life-time">
+                        Life time <Badge>{numeral(cell.lifeTime).format('0')}</Badge>
+                    </ListGroupItem>
+                </ListGroup>
                 <ListGroup>{cellResources}</ListGroup>
             </div>
 
-            const reactionsList = _.map(hex.cell.reactions, (reaction, index) => {
+            const reactionsList = _.map(cell.reactions, (reaction, index) => {
                 return <li key={index}>{reactionToText(reaction)}</li>
             })
-            const divisionConditionsList = _.map(hex.cell.divisionConditions, (val, resource) => {
+            const divisionConditionsList = _.map(cell.divisionConditions, (val, resource) => {
                 return <li key={resource}>{`${resource} = ${val}`}</li>
             })
             cellModal = <Modal show={this.state.showCellInfo} onHide={this.closeCellInfo}>
                 <Modal.Header closeButton>
-                    <Modal.Title>{hex.cell.name}</Modal.Title>
+                    <Modal.Title>{cell.name}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <h4>Reactions (for second)</h4>
@@ -98,13 +104,18 @@ class HexPanel extends React.Component {
 
                     <h4>Division conditions</h4>
                     <ul>{divisionConditionsList}</ul>
+
+                    <h4>Death conditions</h4>
+                    <ul>
+                        <li>Life time: {cell.deathConditions && cell.deathConditions.lifeTime} sec</li>
+                    </ul>
                 </Modal.Body>
             </Modal>
         }
 
         return <div>
             <ListGroup>{resources}</ListGroup>
-            {cell}
+            {cellInfo}
             {cellModal}
         </div>
     }

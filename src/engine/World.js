@@ -7,10 +7,11 @@ const COLORS = [
     0x8dd3c7, 0xffffb3, 0xbebada, 0xfb8072, 0x80b1d3, 0xfdb462, 0xb3de69, 0xfccde5, 0xd9d9d9,
     0xbc80bd, 0xccebc5, 0xffed6f,
 ]
-/*const COLORS = [
+
+/* const COLORS = [
     0xa6cee3, 0x1f78b4, 0xb2df8a, 0x33a02c, 0xfb9a99, 0xe31a1c, 0xfdbf6f, 0xff7f00,
     0xcab2d6, 0x6a3d9a, 0xffff99, 0xb15928,
-]*/
+] */
 
 class Hex {
     constructor ({ i, j, resources, cell }) {
@@ -32,6 +33,7 @@ class Hex {
 
     calcUpdate (delta) {
         if (this.cell) {
+            // Division
             let divided = false
             if (this.cell.canDivide()) {
                 const freeCells = _.filter(this.neighbors, (hex) => {
@@ -45,20 +47,36 @@ class Hex {
                 }
             }
 
+            // Reactions
             if (!divided) {
                 this.cell.applyReactions(delta, this)
             }
         }
     }
 
-    applyUpdate () {
+    applyUpdate (delta) {
         _.each(this.resourcesDelta, (value, key) => {
             this.resources[key] += value
             this.resourcesDelta[key] = 0
         })
 
         if (this.cell) {
-            this.cell.applyUpdate()
+            this.cell.applyUpdate(delta)
+            // Death
+            // FIXME: Move to other method?
+            if (this.cell.canDie()) {
+                this.cell.die()
+            }
+        }
+    }
+
+    removeDeadCell () {
+        if (this.cell && this.cell.isDead) {
+            // Cell left all resources after death
+            _.each(this.cell.resources, (value, key) => {
+                this.resources[key] += value
+            })
+            this.cell = null
         }
     }
 }
@@ -67,8 +85,9 @@ class Hex {
 // Does not keep any resources and cells, just to have proper calculations
 class OutsideHex extends Hex {
     calcUpdate (delta) {}
-    applyUpdate () {}
+    applyUpdate (delta) {}
     applyReaction (reaction, delta) {}
+    removeDeadCells () {}
 }
 
 class HexCollection {
@@ -163,7 +182,11 @@ class World {
         })
 
         this.layer.forEach(function (hex) {
-            hex.applyUpdate()
+            hex.applyUpdate(delta)
+        })
+
+        this.layer.forEach(function (hex) {
+            hex.removeDeadCell(delta)
         })
     }
 

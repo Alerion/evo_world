@@ -1,11 +1,16 @@
 import _ from 'lodash'
 
 class Cell {
-    constructor ({ name, reactions, resources, divisionConditions, color }) {
+    constructor ({ name, reactions, resources, divisionConditions, deathConditions, color }) {
         this.name = name
         this.color = color
         this.reactions = reactions
         this.divisionConditions = divisionConditions
+        this.deathConditions = deathConditions
+
+        this.lifeTime = 0
+        this.isActive = true
+        this.isDead = false
         this.resources = resources
         this.resourcesDelta = {}
         _.each(this.resources, (value, key) => {
@@ -13,18 +18,25 @@ class Cell {
         })
     }
 
-    applyUpdate () {
+    applyUpdate (delta) {
+        // Some reactions can happen even if cell is not active
         _.each(this.resourcesDelta, (value, key) => {
             this.resources[key] += value
             this.resourcesDelta[key] = 0
         })
+
+        if (this.isActive) {
+            this.lifeTime += delta
+        }
     }
 
     applyReactions (delta, hex) {
-        _.each(this.reactions, (reaction) => this.applyReaction(delta, reaction, hex))
+        if (this.isActive) {
+            _.each(this.reactions, (reaction) => this._applyReaction(delta, reaction, hex))
+        }
     }
 
-    applyReaction (delta, reaction, hex) {
+    _applyReaction (delta, reaction, hex) {
         const inputs = reaction.inputs
         const output = reaction.output
         const consumed = {}
@@ -50,8 +62,20 @@ class Cell {
         }
     }
 
+    canDie () {
+        if (!this.isDead && this.deathConditions) {
+            return this.lifeTime >= this.deathConditions.lifeTime
+        }
+        return false
+    }
+
+    die () {
+        this.isDead = true
+        this.isActive = false
+    }
+
     canDivide () {
-        if (_.isEmpty(this.divisionConditions)) {
+        if (!this.isActive || _.isEmpty(this.divisionConditions)) {
             return false
         }
 
@@ -61,6 +85,10 @@ class Cell {
     }
 
     divide () {
+        if (!this.isActive) {
+            return false
+        }
+
         const initilResources = {}
         _.each(this.resources, (value, key) => {
             this.resources[key] = value / 2
@@ -72,6 +100,7 @@ class Cell {
             reactions: this.reactions,
             resources: initilResources,
             divisionConditions: this.divisionConditions,
+            deathConditions: this.deathConditions,
             color: this.color,
         })
     }
@@ -97,6 +126,7 @@ class CellFactory {
             reactions: this.config.reactions,
             resources: Object.assign({}, this.initilResources),
             divisionConditions: this.config.divisionConditions,
+            deathConditions: this.config.deathConditions,
             color: this.color,
         })
         return cell

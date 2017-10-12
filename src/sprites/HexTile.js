@@ -21,7 +21,10 @@ class HexTile extends Phaser.Graphics {
 
     update () {
         if (this.hex.cell) {
+            this.tileTag.visible = true
             this.tileTag.text = this.hex.cell.name
+        } else {
+            this.tileTag.visible = false
         }
         this.drawHex()
     }

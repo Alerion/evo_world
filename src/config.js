@@ -61,6 +61,9 @@ const CONFIG = {
                 divisionConditions: {
                     C: 30,
                 },
+                deathConditions: {
+                    lifeTime: 7, // seconds
+                },
             }, {
                 name: 'Oridi',
                 reactions: [{
