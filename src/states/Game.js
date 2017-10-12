@@ -73,6 +73,7 @@ class Game extends Phaser.State {
         ReactDOM.render(
             React.createElement(
                 HexPanel, {
+                    config: this.game.config.world,
                     hex: this.selectedHex,
                     start: this.startSimulation.bind(this),
                     stop: this.stopSimulation.bind(this),

@@ -11,10 +11,15 @@ import {reactionToText} from '../utils.js'
 class HexPanel extends React.Component {
     constructor (props) {
         super(props)
-        this.state = { showCellInfo: false }
+        this.state = {
+            showCellInfo: false,
+            showConfig: false,
+        }
 
         this.openCellInfo = this.openCellInfo.bind(this)
         this.closeCellInfo = this.closeCellInfo.bind(this)
+        this.openConfig = this.openConfig.bind(this)
+        this.closeConfig = this.closeConfig.bind(this)
     }
 
     render () {
@@ -49,7 +54,20 @@ class HexPanel extends React.Component {
                     Reset <Glyphicon glyph="refresh"/>
                 </Button>
                 {displayFilter}
+                <Button bsStyle="info" onClick={this.openConfig}>
+                    Config <Glyphicon glyph="question-sign"/>
+                </Button>
             </ButtonToolbar>
+            <Modal show={this.state.showConfig} onHide={this.closeConfig}>
+                <Modal.Header closeButton>
+                    <Modal.Title>World configuration</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <pre className="pre-scrollable" style={{maxHeight: 600}}>
+                        <code>{JSON.stringify(this.props.config, null, 4)}</code>
+                    </pre>
+                </Modal.Body>
+            </Modal>
             {this.renderHex(this.props.hex)}
         </div>
     }
@@ -126,6 +144,14 @@ class HexPanel extends React.Component {
 
     closeCellInfo () {
         this.setState({ showCellInfo: false })
+    }
+
+    openConfig () {
+        this.setState({ showConfig: true })
+    }
+
+    closeConfig () {
+        this.setState({ showConfig: false })
     }
 }
 
