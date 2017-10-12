@@ -44,6 +44,14 @@ module.exports = {
             from: path.resolve(__dirname, 'index.html'),
             to: path.resolve(__dirname, 'dist'),
         }]),
+        new CopyWebpackPlugin([{
+            from: path.resolve(__dirname, 'src/css'),
+            to: path.resolve(__dirname, 'dist/css'),
+        }]),
+        new CopyWebpackPlugin([{
+            from: path.resolve(__dirname, 'src/fonts'),
+            to: path.resolve(__dirname, 'dist/fonts'),
+        }]),
     ],
     module: {
         rules: [
