@@ -8,7 +8,7 @@ const CONFIG = {
 
     world: {
         seed: '1234567890',
-        width: 20,
+        width: 26,
         height: 20,
         resources: {
             // Reactions output is split to neighbor hexes. This values tells
@@ -32,7 +32,7 @@ const CONFIG = {
             initial: {
                 A: 10,
                 B: 10,
-                C: 0,
+                C: 10,
                 e: 0,
             },
             // maxDispay - used to calculate color and opacity for resource
@@ -62,24 +62,51 @@ const CONFIG = {
                     C: 30,
                 },
                 deathConditions: {
-                    lifeTime: 7, // seconds
+                    lifeTime: 5, // seconds
                 },
             }, {
                 name: 'Oridi',
                 reactions: [{
-                    // C => 3e
+                    // A + 2B => C
                     inputs: {
-                        C: 1,
+                        A: 1,
+                        B: 2,
                     },
                     output: {
-                        e: 3,
+                        C: 1,
                     },
                 }],
+                divisionConditions: {
+                    C: 30,
+                },
+                deathConditions: {
+                    lifeTime: 5, // seconds
+                },
+            }, {
+                name: 'Vendi',
+                reactions: [{
+                    // C => A + B
+                    inputs: {
+                        C: 2,
+                    },
+                    output: {
+                        A: 1,
+                        B: 1,
+                    },
+                }],
+                divisionConditions: {
+                    A: 30,
+                    B: 30,
+                },
+                deathConditions: {
+                    lifeTime: 4, // seconds
+                },
             }],
             // Spawn probability
             initial: {
                 Rael: 0.1,
                 Oridi: 0.1,
+                Vendi: 0.1,
             },
         },
     },
