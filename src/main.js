@@ -21,6 +21,12 @@ class Game extends Phaser.Game {
         this.state.add('Game', GameState)
         this.state.start('Game')
     }
+
+    boot () {
+        super.boot()
+        // Disable game stopping on focus lost
+        this.stage.disableVisibilityChange = true
+    }
 }
 
 window.game = new Game()
