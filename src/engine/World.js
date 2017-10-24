@@ -55,16 +55,17 @@ class Hex {
                 this.cell.applyReactions(delta, this)
             }
         }
-
-        this._calcDiffusion()
     }
 
     applyUpdate (delta) {
         _.each(this.resourcesDelta, (value, key) => {
             this.resources[key] += value
+            console.assert(this.resources[key] >= 0, `Resource ${key} is negative value.`)
             this.resourcesDelta[key] = 0
         })
+    }
 
+    applyCellUpdate (delta) {
         if (this.cell) {
             this.cell.applyUpdate(delta)
             // Death
@@ -85,19 +86,20 @@ class Hex {
         }
     }
 
-    _calcDiffusion () {
+    calcDiffusion (delta) {
         const NEIGHBORS_COUNT = 6
         _.each(this.resources, (value, key) => {
             if (this.resourcesConfig.list[key].isEnergy) {
                 return
             }
 
-            const speed = this.resourcesConfig.list[key].diffusionSpeed
+            const maxSpeed = this.resourcesConfig.list[key].diffusionSpeed
             _.each(this.neighbors, (hex) => {
                 const R1 = this.resources[key]
                 const R2 = hex.resources[key]
                 const concentration = (R1 - R2) / (R1 + R2)
-                this.resourcesDelta[key] += -speed * concentration / NEIGHBORS_COUNT
+                const speed = _.min([maxSpeed, Math.abs(R1 - R2)])
+                this.resourcesDelta[key] += -speed * concentration / NEIGHBORS_COUNT * delta
             })
         })
     }
@@ -108,7 +110,9 @@ class Hex {
 class OutsideHex extends Hex {
     calcUpdate (delta) {}
     applyUpdate (delta) {}
+    applyCellUpdate (delta) {}
     applyReaction (reaction, delta) {}
+    calcDiffusion (delta) {}
     removeDeadCells () {}
 }
 
@@ -208,8 +212,32 @@ class World {
         })
 
         this.layer.forEach((hex) => {
+            hex.applyCellUpdate(delta)
+        })
+
+        this.layer.forEach((hex) => {
             hex.removeDeadCell(delta)
         })
+
+        // Diffusion
+        let sum1 = 0
+        this.layer.forEach((hex) => {
+            sum1 += hex.resources.A
+        })
+
+        this.layer.forEach((hex) => {
+            hex.calcDiffusion(delta)
+        })
+
+        this.layer.forEach((hex) => {
+            hex.applyUpdate(delta)
+        })
+
+        let sum2 = 0
+        this.layer.forEach((hex) => {
+            sum2 += hex.resources.A
+        })
+        console.assert(Math.abs(sum1 - sum2) < 0.0001, 'Not equal resources after diffusion')
     }
 
     initialize () {
