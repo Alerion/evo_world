@@ -46,7 +46,7 @@ This will optimize and minimize the compiled bundle.
 
 Then copy to Github static site project and commit:
 
-```cp dist/* ../alerion.github.io/evo_world/```
+```cp -r dist/* ../alerion.github.io/evo_world/```
 
 # Project structure
 

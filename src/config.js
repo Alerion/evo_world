@@ -11,29 +11,31 @@ const CONFIG = {
         width: 26,
         height: 20,
         resources: {
-            // Reactions output is split to neighbor hexes. This values tells
-            // what part of output is split to six neighbors. 0 - nothing split to neighbors,
-            // 1 - all split and no output to current hex with cell.
-            updateSplitRatio: 0.3,
-            list: [{
-                name: 'A',
-                isEnergy: false,
-            }, {
-                name: 'B',
-                isEnergy: false,
-            }, {
-                name: 'C',
-                isEnergy: false,
-            }, {
-                name: 'e',
-                isEnergy: true,
-            }],
-            // Add all possible resources at least with 0
-            initial: {
-                A: 10,
-                B: 10,
-                C: 10,
-                e: 0,
+            list: {
+                A: {
+                    name: 'A',
+                    isEnergy: false,
+                    diffusionSpeed: 20,
+                    initial: 10,
+                },
+                B: {
+                    name: 'B',
+                    isEnergy: false,
+                    diffusionSpeed: 20,
+                    initial: 10,
+                },
+                C: {
+                    name: 'C',
+                    isEnergy: false,
+                    diffusionSpeed: 20,
+                    initial: 10,
+                },
+                e: {
+                    name: 'e',
+                    isEnergy: true,
+                    diffusionSpeed: 20,
+                    initial: 0,
+                },
             },
             // maxDispay - used to calculate color and opacity for resource
             maxDispay: {
@@ -116,8 +118,8 @@ _.each(CONFIG.world.resources.maxDispay, (value, key) => {
     CONFIG.world.resources.maxDispay[key] = value * RESOURCES_MULTIPLIER
 })
 
-_.each(CONFIG.world.resources.initial, (value, key) => {
-    CONFIG.world.resources.initial[key] = value * RESOURCES_MULTIPLIER
+_.each(CONFIG.world.resources.list, (item) => {
+    item.initial = item.initial * RESOURCES_MULTIPLIER
 })
 
 _.each(CONFIG.world.cells.list, (cell) => {

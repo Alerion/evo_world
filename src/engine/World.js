@@ -14,9 +14,10 @@ const COLORS = [
 ] */
 
 class Hex {
-    constructor ({ i, j, resources, cell }) {
+    constructor ({ i, j, resources, cell, resourcesConfig }) {
         this.i = i
         this.j = j
+        this.resourcesConfig = resourcesConfig
         this.resources = resources
         this.cell = cell
         this.neighbors = []
@@ -28,7 +29,9 @@ class Hex {
     }
 
     setNeighbors (neighbors) {
-        this.neighbors = neighbors
+        this.neighbors = _.filter(neighbors, (hex) => {
+            return hex.resources
+        })
     }
 
     calcUpdate (delta) {
@@ -52,6 +55,8 @@ class Hex {
                 this.cell.applyReactions(delta, this)
             }
         }
+
+        this._calcDiffusion()
     }
 
     applyUpdate (delta) {
@@ -78,6 +83,23 @@ class Hex {
             })
             this.cell = null
         }
+    }
+
+    _calcDiffusion () {
+        const NEIGHBORS_COUNT = 6
+        _.each(this.resources, (value, key) => {
+            if (this.resourcesConfig.list[key].isEnergy) {
+                return
+            }
+
+            const speed = this.resourcesConfig.list[key].diffusionSpeed
+            _.each(this.neighbors, (hex) => {
+                const R1 = this.resources[key]
+                const R2 = hex.resources[key]
+                const concentration = (R1 - R2) / (R1 + R2)
+                this.resourcesDelta[key] += -speed * concentration / NEIGHBORS_COUNT
+            })
+        })
     }
 }
 
@@ -155,12 +177,12 @@ class World {
         this.rnd.sow(this.seed)
 
         this.resources = {}
-        resources.list.forEach((item) => {
-            this.resources[item.name] = new Resource(item)
+        _.each(resources.list, (item, name) => {
+            this.resources[name] = new Resource(item)
         })
 
         this.cells = {}
-        cells.list.forEach((item, index) => {
+        _.each(_.values(cells.list), (item, index) => {
             this.cells[item.name] = new CellFactory({
                 config: item,
                 resourcesConfig: this.resourcesConfig,
@@ -177,20 +199,25 @@ class World {
         // Then changes are applied. This way only current values are used form
         // calculation and we avoid situation, when next hex use already updated
         // values from previous hex.
-        this.layer.forEach(function (hex) {
+        this.layer.forEach((hex) => {
             hex.calcUpdate(delta)
         })
 
-        this.layer.forEach(function (hex) {
+        this.layer.forEach((hex) => {
             hex.applyUpdate(delta)
         })
 
-        this.layer.forEach(function (hex) {
+        this.layer.forEach((hex) => {
             hex.removeDeadCell(delta)
         })
     }
 
     initialize () {
+        const resourcesInitial = {}
+        _.each(this.resourcesConfig.list, (item) => {
+            resourcesInitial[item.name] = item.initial
+        })
+
         for (let i = 0; i < this.height; i++) {
             for (let j = 0; j < this.width; j++) {
                 let cell
@@ -199,11 +226,13 @@ class World {
                 if (cellName) {
                     cell = this.cells[cellName].create()
                 }
+
                 const hex = new Hex({
                     i: i,
                     j: j,
-                    resources: Object.assign({}, this.resourcesConfig.initial),
+                    resources: Object.assign({}, resourcesInitial),
                     cell: cell,
+                    resourcesConfig: this.resourcesConfig,
                 })
                 this.layer.set(i, j, hex)
             }
