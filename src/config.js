@@ -58,6 +58,11 @@ const CONFIG = {
                         C: 1,
                     },
                 }],
+                storage: {
+                    A: 20,
+                    B: 10,
+                    C: 30,
+                },
                 divisionConditions: {
                     C: 30,
                 },
@@ -78,6 +83,11 @@ const CONFIG = {
                         C: 1,
                     },
                 }],
+                storage: {
+                    A: 10,
+                    B: 20,
+                    C: 30,
+                },
                 divisionConditions: {
                     C: 30,
                 },
@@ -89,18 +99,23 @@ const CONFIG = {
                 name: 'Vendi',
                 initial: 0.1,
                 reactions: [{
-                    // C => A + B
+                    // C => 1.5A + 1.5B
                     inputs: {
-                        C: 2,
+                        C: 1,
                     },
                     output: {
-                        A: 1,
-                        B: 1,
+                        A: 1.5,
+                        B: 1.5,
                     },
                 }],
+                storage: {
+                    A: 45,
+                    B: 45,
+                    C: 10,
+                },
                 divisionConditions: {
-                    A: 30,
-                    B: 30,
+                    A: 45,
+                    B: 45,
                 },
                 deathConditions: {
                     lifeTime: 4, // seconds
