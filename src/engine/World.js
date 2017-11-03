@@ -98,7 +98,7 @@ class Hex {
                 const R1 = this.resources[key]
                 const R2 = hex.resources[key]
                 const concentration = (R1 - R2) / (R1 + R2)
-                const speed = _.min([maxSpeed, Math.abs(R1 - R2)])
+                const speed = _.min([maxSpeed, Math.abs(R1 - R2) / 2])
                 this.resourcesDelta[key] += -speed * concentration / NEIGHBORS_COUNT * delta
             })
         })
