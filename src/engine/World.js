@@ -23,9 +23,7 @@ class Hex {
         this.neighbors = []
 
         this.resourcesDelta = {}
-        _.each(this.resources, (value, key) => {
-            this.resourcesDelta[key] = 0
-        })
+        this.resetResourcesDelta()
     }
 
     setNeighbors (neighbors) {
@@ -52,6 +50,7 @@ class Hex {
 
             // Reactions
             if (!divided) {
+                this.cell.fillStorage(delta, this)
                 this.cell.applyReactions(delta, this)
             }
         }
@@ -60,9 +59,10 @@ class Hex {
     applyUpdate (delta) {
         _.each(this.resourcesDelta, (value, key) => {
             this.resources[key] += value
-            console.assert(this.resources[key] >= 0, `Resource ${key} is negative value.`)
-            this.resourcesDelta[key] = 0
+            console.assert(this.resources[key] >= 0, `Resource ${key} is negative value = ${this.resources[key]}, delta = ${value}.`)
         })
+
+        this.resetResourcesDelta()
     }
 
     applyCellUpdate (delta) {
@@ -97,10 +97,19 @@ class Hex {
             _.each(this.neighbors, (hex) => {
                 const R1 = this.resources[key]
                 const R2 = hex.resources[key]
-                const concentration = (R1 - R2) / (R1 + R2)
-                const speed = _.min([maxSpeed, Math.abs(R1 - R2) / 2])
+                let concentration = 0
+                if (R1 + R2 !== 0) {
+                    concentration = (R1 - R2) / (R1 + R2)
+                }
+                const speed = Math.min(maxSpeed, Math.abs(R1 - R2) / 2)
                 this.resourcesDelta[key] += -speed * concentration / NEIGHBORS_COUNT * delta
             })
+        })
+    }
+
+    resetResourcesDelta () {
+        _.each(this.resources, (value, key) => {
+            this.resourcesDelta[key] = 0
         })
     }
 }

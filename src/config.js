@@ -58,17 +58,15 @@ const CONFIG = {
                         C: 1,
                     },
                 }],
-                storage: {
-                    A: 20,
-                    B: 10,
-                    C: 30,
-                },
                 divisionConditions: {
                     C: 30,
                 },
                 deathConditions: {
                     lifeTime: 5, // seconds
                 },
+                // Cell stores resources for 10 turns reactions or division conditions.
+                // Storage is filled with some rate.
+                storeMaxTurns: 10,
             },
             Oridi: {
                 name: 'Oridi',
@@ -83,17 +81,13 @@ const CONFIG = {
                         C: 1,
                     },
                 }],
-                storage: {
-                    A: 10,
-                    B: 20,
-                    C: 30,
-                },
                 divisionConditions: {
                     C: 30,
                 },
                 deathConditions: {
                     lifeTime: 5, // seconds
                 },
+                storeMaxTurns: 10,
             },
             Vendi: {
                 name: 'Vendi',
@@ -108,11 +102,6 @@ const CONFIG = {
                         B: 1.5,
                     },
                 }],
-                storage: {
-                    A: 45,
-                    B: 45,
-                    C: 10,
-                },
                 divisionConditions: {
                     A: 45,
                     B: 45,
@@ -120,6 +109,7 @@ const CONFIG = {
                 deathConditions: {
                     lifeTime: 4, // seconds
                 },
+                storeMaxTurns: 10,
             },
         },
     },
