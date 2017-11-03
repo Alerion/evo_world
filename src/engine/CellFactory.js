@@ -113,7 +113,7 @@ class CellFactory {
         this.color = color
 
         this.initilResources = {}
-        _.each(resourcesConfig.list, (item) => {
+        _.each(resourcesConfig, (item) => {
             if (!item.isEnergy) {
                 this.initilResources[item.name] = 0
             }

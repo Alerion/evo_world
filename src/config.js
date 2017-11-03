@@ -11,44 +11,40 @@ const CONFIG = {
         width: 26,
         height: 20,
         resources: {
-            list: {
-                A: {
-                    name: 'A',
-                    isEnergy: false,
-                    diffusionSpeed: 20,
-                    initial: 10,
-                },
-                B: {
-                    name: 'B',
-                    isEnergy: false,
-                    diffusionSpeed: 20,
-                    initial: 10,
-                },
-                C: {
-                    name: 'C',
-                    isEnergy: false,
-                    diffusionSpeed: 20,
-                    initial: 10,
-                },
-                e: {
-                    name: 'e',
-                    isEnergy: true,
-                    diffusionSpeed: 20,
-                    initial: 0,
-                },
+            A: {
+                name: 'A',
+                isEnergy: false,
+                diffusionSpeed: 20,
+                initial: 10,
+                // maxDispay - used to calculate color and opacity for resource
+                maxDispay: 15,
             },
-            // maxDispay - used to calculate color and opacity for resource
-            maxDispay: {
-                A: 20,
-                B: 20,
-                C: 20,
-                e: 20,
+            B: {
+                name: 'B',
+                isEnergy: false,
+                diffusionSpeed: 20,
+                initial: 10,
+                maxDispay: 15,
+            },
+            C: {
+                name: 'C',
+                isEnergy: false,
+                diffusionSpeed: 20,
+                initial: 10,
+                maxDispay: 15,
+            },
+            e: {
+                name: 'e',
+                isEnergy: true,
+                diffusionSpeed: 20,
+                initial: 0,
+                maxDispay: 15,
             },
         },
         // Lets use Elfs female names http://www.fantasynamegenerators.com/dnd-elf-names.php
         // Just for mem
         cells: {
-            list: [{
+            Rael: {
                 name: 'Rael',
                 // Spawn probability
                 initial: 0.1,
@@ -68,7 +64,8 @@ const CONFIG = {
                 deathConditions: {
                     lifeTime: 5, // seconds
                 },
-            }, {
+            },
+            Oridi: {
                 name: 'Oridi',
                 initial: 0.1,
                 reactions: [{
@@ -87,7 +84,8 @@ const CONFIG = {
                 deathConditions: {
                     lifeTime: 5, // seconds
                 },
-            }, {
+            },
+            Vendi: {
                 name: 'Vendi',
                 initial: 0.1,
                 reactions: [{
@@ -107,21 +105,18 @@ const CONFIG = {
                 deathConditions: {
                     lifeTime: 4, // seconds
                 },
-            }],
+            },
         },
     },
 }
 
-_.each(CONFIG.world.resources.maxDispay, (value, key) => {
-    CONFIG.world.resources.maxDispay[key] = value * RESOURCES_MULTIPLIER
-})
-
-_.each(CONFIG.world.resources.list, (item) => {
+_.each(CONFIG.world.resources, (item) => {
     item.initial = item.initial * RESOURCES_MULTIPLIER
     item.diffusionSpeed = item.diffusionSpeed * RESOURCES_MULTIPLIER
+    item.maxDispay = item.maxDispay * RESOURCES_MULTIPLIER
 })
 
-_.each(CONFIG.world.cells.list, (cell) => {
+_.each(CONFIG.world.cells, (cell) => {
     _.each(cell.reactions, (reaction) => {
         _.each(reaction.inputs, (value, key) => {
             reaction.inputs[key] = value * RESOURCES_MULTIPLIER

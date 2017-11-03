@@ -89,11 +89,11 @@ class Hex {
     calcDiffusion (delta) {
         const NEIGHBORS_COUNT = 6
         _.each(this.resources, (value, key) => {
-            if (this.resourcesConfig.list[key].isEnergy) {
+            if (this.resourcesConfig[key].isEnergy) {
                 return
             }
 
-            const maxSpeed = this.resourcesConfig.list[key].diffusionSpeed
+            const maxSpeed = this.resourcesConfig[key].diffusionSpeed
             _.each(this.neighbors, (hex) => {
                 const R1 = this.resources[key]
                 const R2 = hex.resources[key]
@@ -181,12 +181,12 @@ class World {
         this.rnd.sow(this.seed)
 
         this.resources = {}
-        _.each(resources.list, (item, name) => {
+        _.each(resources, (item, name) => {
             this.resources[name] = new Resource(item)
         })
 
         this.cells = {}
-        _.each(_.values(cells.list), (item, index) => {
+        _.each(_.values(cells), (item, index) => {
             this.cells[item.name] = new CellFactory({
                 config: item,
                 resourcesConfig: this.resourcesConfig,
@@ -242,12 +242,12 @@ class World {
 
     initialize () {
         const resourcesInitial = {}
-        _.each(this.resourcesConfig.list, (item) => {
+        _.each(this.resourcesConfig, (item) => {
             resourcesInitial[item.name] = item.initial
         })
 
         const cellsProbability = {}
-        _.each(this.cellsConfig.list, (item) => {
+        _.each(this.cellsConfig, (item) => {
             cellsProbability[item.name] = item.initial
         })
 

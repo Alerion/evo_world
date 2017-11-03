@@ -62,7 +62,7 @@ class Game extends Phaser.State {
         }, {
             key: '',
         }]
-        _.each(this.world.resourcesConfig.list, (item) => {
+        _.each(this.world.resourcesConfig, (item) => {
             displayChoices.push({
                 key: item.name,
                 name: item.name,
@@ -176,7 +176,7 @@ class Game extends Phaser.State {
         } else {
             const color = 0x8dd3c7
             const resource = this.displayMode
-            const maxVal = this.world.resourcesConfig.maxDispay[resource]
+            const maxVal = this.world.resourcesConfig[resource].maxDispay
             const val = hex.resources[resource]
             const opacity = 0.1 + val / maxVal * 0.9
             return {color, opacity}
