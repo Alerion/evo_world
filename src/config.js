@@ -50,6 +50,8 @@ const CONFIG = {
         cells: {
             list: [{
                 name: 'Rael',
+                // Spawn probability
+                initial: 0.1,
                 reactions: [{
                     // 2A + B => C
                     inputs: {
@@ -68,6 +70,7 @@ const CONFIG = {
                 },
             }, {
                 name: 'Oridi',
+                initial: 0.1,
                 reactions: [{
                     // A + 2B => C
                     inputs: {
@@ -86,6 +89,7 @@ const CONFIG = {
                 },
             }, {
                 name: 'Vendi',
+                initial: 0.1,
                 reactions: [{
                     // C => A + B
                     inputs: {
@@ -104,12 +108,6 @@ const CONFIG = {
                     lifeTime: 4, // seconds
                 },
             }],
-            // Spawn probability
-            initial: {
-                Rael: 0.1,
-                Oridi: 0.1,
-                Vendi: 0.1,
-            },
         },
     },
 }

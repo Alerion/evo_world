@@ -246,10 +246,15 @@ class World {
             resourcesInitial[item.name] = item.initial
         })
 
+        const cellsProbability = {}
+        _.each(this.cellsConfig.list, (item) => {
+            cellsProbability[item.name] = item.initial
+        })
+
         for (let i = 0; i < this.height; i++) {
             for (let j = 0; j < this.width; j++) {
                 let cell
-                const cellName = this.rnd.randomCell(this.cellsConfig.initial)
+                const cellName = this.rnd.randomCell(cellsProbability)
 
                 if (cellName) {
                     cell = this.cells[cellName].create()
