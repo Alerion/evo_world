@@ -1,5 +1,7 @@
 # Evo World
 
+https://alerion.github.io/evo_world/index.html
+
 # Setup
 
 ## 1. Clone this repo
